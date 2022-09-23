@@ -1,0 +1,5 @@
+Flask
+uWSGI
+Werkzeug
+mysql-connector
+typing

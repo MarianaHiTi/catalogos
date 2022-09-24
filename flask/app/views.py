@@ -10,6 +10,10 @@ from app import app
 def home():
     return render_template('home.html')
 
+@app.route('/adminlte')
+def admin():
+    return render_template('adminlte.html')
+
 @app.route('/join', methods=['GET','POST'])
 def my_form_post():
     nombre_usuario = request.form['text1']
@@ -61,7 +65,7 @@ def usuarios():
     cursor.execute(select_usuarios)
     result = cursor.fetchall()
 
-    headings = ("ID Usuario", "Usuario", "Password")
+    headings = ("wwww", "Usuario", "Password")
     data = (result)
     #data = (("1","Mariana","Mariana123"),("2","Fher","Fher123"))
     return render_template('usuarios.html',headings=headings,data=data)

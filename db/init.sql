@@ -2,9 +2,18 @@ CREATE DATABASE catalogos;
 use catalogos;
 
 CREATE TABLE usuarios (
-  id_usuario int(11) NOT NULL,
+  id_usuario int(11) NOT NULL PRIMARY KEY,
   nombre_usuario VARCHAR(20),
   password_usuario VARCHAR(20)
+);
+
+CREATE TABLE catalogos (
+  id_catalogo INT AUTO_INCREMENT PRIMARY KEY,
+  nombre_catalogo VARCHAR(20),
+  descripcion_catalogo VARCHAR(100),
+  archivo_catalogo LONGBLOB,
+  archivo_nombre VARCHAR(100),
+  usuario_catalogo VARCHAR(20)
 );
 
 INSERT INTO usuarios

@@ -1,0 +1,44 @@
+version: "3.7"
+services:
+  flask:
+    build: ./flask
+    container_name: flask
+    restart: always
+    environment:
+      - APP_NAME=MyFlaskApp
+    volumes:
+      - ./flask:/app
+    expose:
+      - 8080
+    links:
+      - db
+    depends_on:
+      - db
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "8003:80"
+  #db_mysql:
+  #  image: mysql:5.7
+  #  container_name: db
+  #  ports:
+  #    - "32000:3306"
+  #  environment:
+  #    MYSQL_ROOT_PASSWORD: root
+  #  volumes:
+  #    - ./db:/docker-entrypoint-initdb.d/:ro
+
+  db:
+    image: mongo:latest
+    hostname: test_mongodb
+    container_name: test_mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=animal_db
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+    ports:
+      - 27017:27017

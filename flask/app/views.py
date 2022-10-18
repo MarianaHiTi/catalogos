@@ -15,6 +15,24 @@ app.config['SECRET_KEY']="admin123"
 UPLOAD_FOLDER = '/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+conn = mysql.connector.connect(
+    host="db",
+    user="root",
+    password="root",
+    database="catalogos"
+)
+
+##### AGREGAR CATALOGO EN AUTOMATICO PARA EJEMPLO
+def agregar_catalogo_ejemplo():
+    sql = "INSERT INTO catalogos (nombre_catalogo,descripcion_catalogo,archivo_catalogo,archivo_nombre,usuario_catalogo) VALUES (%s,%s,%s,%s,%s)"
+    cursor = conn.cursor()
+    with open("app/CV_MarianaHinojosa.pdf","rb") as pdf_file:
+        archivo_binario = base64.b64encode(pdf_file.read())
+
+    cursor.execute(sql, ("Catalogo Ejemplo","Esto es una descripcion de ejemplo",archivo_binario,"archivo_ejemplo","Mariana Hinojosa",))
+    conn.commit()
+
+agregar_catalogo_ejemplo()
 
 class CatalogoForm(FlaskForm):
     conn = mysql.connector.connect(
@@ -39,6 +57,7 @@ class CatalogoForm(FlaskForm):
 
 @app.route('/')
 def home():
+    print("HOLAAAAAAAAAAA")
     return render_template('home.html')
 
 @app.route('/menu')

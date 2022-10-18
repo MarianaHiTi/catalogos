@@ -4,3 +4,5 @@ uWSGI
 Werkzeug
 mysql-connector
 typing
+pymongo
+flask_mongoengine

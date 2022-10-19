@@ -9,6 +9,7 @@ from wtforms import (StringField, TextAreaField, IntegerField, BooleanField, Rad
 from wtforms.validators import InputRequired, Length
 from werkzeug.utils import secure_filename
 from app import app
+import time
 
 
 app.config['SECRET_KEY']="admin123"
@@ -38,12 +39,8 @@ def agregar_catalogo_ejemplo():
 #agregar_catalogo_ejemplo()
 
 class CatalogoForm(FlaskForm):
-    conn = mysql.connector.connect(
-        host="db",
-        user="root",
-        password="root",
-        database="catalogos"
-    )
+    time.sleep(240)
+    conn = conexion_db()
     select_usuarios = "SELECT nombre_usuario FROM usuarios"
     cursor = conn.cursor()
     cursor.execute(select_usuarios)

@@ -39,18 +39,15 @@ def agregar_catalogo_ejemplo():
 #agregar_catalogo_ejemplo()
 
 class CatalogoForm(FlaskForm):
-    time.sleep(240)
+    #time.sleep(180)
     conn = conexion_db()
     select_usuarios = "SELECT nombre_usuario FROM usuarios"
     cursor = conn.cursor()
     cursor.execute(select_usuarios)
     result = list(cursor.fetchall())
     usuarios = [ item for elem in result for item in elem]
-    nombre = StringField('Nombre catalogo', validators=[InputRequired(),
-                                             Length(min=10, max=100)])
-    descripcion = TextAreaField('Descripcion catalogo',
-                                validators=[InputRequired(),
-                                            Length(max=200)])
+    nombre = StringField('Nombre catalogo', validators=[InputRequired(),Length(min=10, max=100)])
+    descripcion = TextAreaField('Descripcion catalogo',validators=[InputRequired(),Length(max=200)])
     archivo = FileField('Archivo catalogo')
     usuario = SelectField(u'Usuario catalogo', choices=usuarios)
  
@@ -58,7 +55,6 @@ class CatalogoForm(FlaskForm):
 def home():
     return render_template('home.html')
     
-
 @app.route('/menu')
 def menu():
     return render_template('menu.html')
@@ -79,8 +75,6 @@ def my_form_post():
     mycursor.execute(sql, user)
     myresult = mycursor.fetchone()
     if myresult[0] == password_usuario:
-        print ("siessssss adminnnnn --------------")
-        print("1234e8283930039383838")
         return catalogos()
     else:
         print("NO ES ADMIN")
@@ -115,8 +109,7 @@ def agregar_catalogo():
             cursor.execute(sql, (nombre_catalogo,descripcion_catalogo,archivo_binario,archivo_nombre,usuario_catalogo,))
             conn.commit()
             print("se guardo")
-            return catalogos()
-           
+            return catalogos()           
     return render_template('agregar_catalogo.html', form=form)
 
 @app.route('/getFile', methods=['GET'])
@@ -152,4 +145,5 @@ def catalogos():
             
         data.append(data0)
         data0 = []
+        print("HOLA123")
     return render_template('catalogos.html',data=data)

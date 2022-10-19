@@ -1,4 +1,7 @@
 from flask import Flask
+import time
+
+time.sleep(10)
 
 app = Flask(__name__)
 

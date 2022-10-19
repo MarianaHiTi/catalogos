@@ -36,7 +36,7 @@ def agregar_catalogo_ejemplo():
     cursor.execute(sql, ("Catalogo Ejemplo","Descripcion ejemplo",archivo_binario,"archivo_ejemplo","Mariana Hinojosa",))
     conn.commit()
 
-#agregar_catalogo_ejemplo()
+agregar_catalogo_ejemplo()
 
 class CatalogoForm(FlaskForm):
     #time.sleep(180)

@@ -10,7 +10,7 @@ CREATE TABLE usuarios (
 CREATE TABLE catalogos (
   id_catalogo INT AUTO_INCREMENT PRIMARY KEY,
   nombre_catalogo VARCHAR(20),
-  descripcion_catalogo VARCHAR(100),
+  descripcion_catalogo VARCHAR(1000),
   archivo_catalogo LONGBLOB,
   archivo_nombre VARCHAR(100),
   usuario_catalogo VARCHAR(20)

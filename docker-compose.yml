@@ -10,6 +10,8 @@ services:
       - ./flask:/app
     expose:
       - 8080
+    depends_on:
+      - db
   nginx:
     build: ./nginx
     container_name: nginx

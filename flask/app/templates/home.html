@@ -1,43 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>First Flask App</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-</head>
-<script>
-function myFunction() {
-var text1= $('#text1').val();
-var text2= $('#text2').val();
-  $.ajax({
-              url: "/join",
-              type: "POST",
-              data: {text1:text1,
-              text2:text2}
-          }).done(function(response) {
-            var html= "<br><br><br><p> <b> RESULT : <b><p>";
-            response =response.result;
-                 $.each(response,function(key,val){
-                 console.log(val);
-                    html+="<p>"+val+"<p>"
-                });
-                html +="<br>";
-                $(".show-data").append(html);
-            });
-};
-  </script>
-<body>
-    <p>
-        Login<br><br>
-            Usario<input type="text" id="text1" name="text1"><br><br>
-            Password<input type="text" id="text2" name="text2"><br><br>
-            <button id="clicked" onclick="myFunction()">Submit</button>
-    </p>
-    <div class="show-data" >
-    </div>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema de Catalogos | Inicio de Sesión</title>
 
-    <form method="GET" action="usuarios">
-        <input type="submit" value="Usuarios"/>
-    </form>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/adminlte.min.css') }}">
+</head>
+
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="{{ url_for('static', filename='index2.html') }}"><b>Sistema de Catalogos</b></a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">Inicio de sesion</p>
+
+      <form  method="POST" action="/join">
+        <div class="input-group mb-3">
+          <input type="" class="form-control" placeholder="Usuario" id="text1" name="text1">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" placeholder="Password" id="text2" name="text2">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <!-- /.col -->
+          <div class="col-3"></div>
+          <div class="col-6">
+            <button class="btn btn-primary btn-block" id="clicked" onclick="myFunction()">Ingresar</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+    </div>
+    <!-- /.login-card-body -->
+  </div>
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='dist/js/adminlte.min.js') }}"></script>
 </body>
 </html>

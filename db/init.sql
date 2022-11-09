@@ -1,32 +1,54 @@
 CREATE DATABASE catalogos;
 use catalogos;
 
-CREATE TABLE usuarios (
-  id_usuario int(11) NOT NULL PRIMARY KEY,
-  nombre_usuario VARCHAR(20),
-  password_usuario VARCHAR(20)
+CREATE TABLE user_type (
+  id_type int(11) AUTO_INCREMENT PRIMARY KEY,
+  type_description VARCHAR(20)
 );
 
-CREATE TABLE catalogos (
-  id_catalogo INT AUTO_INCREMENT PRIMARY KEY,
-  nombre_catalogo VARCHAR(20),
-  descripcion_catalogo VARCHAR(1000),
-  archivo_catalogo LONGBLOB,
-  archivo_nombre VARCHAR(100),
-  usuario_catalogo VARCHAR(20)
+
+CREATE TABLE users (
+  id_user int(11) AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(20),
+  password VARCHAR(80),
+  first_name VARCHAR(30),
+  second_name VARCHAR(30),
+  user_type int(11),
+  FOREIGN KEY(user_type) REFERENCES user_type(id_type)
 );
 
-INSERT INTO usuarios
-  (id_usuario, nombre_usuario, password_usuario)
-VALUES
-  (1, "admin", "admin123");
+CREATE TABLE catalogs (
+  id_catalog int(11) AUTO_INCREMENT PRIMARY KEY,
+  catalog_name VARCHAR(50),
+  catalog_description VARCHAR(1000),
+  file LONGBLOB,
+  filename VARCHAR(50),
+  id_user int(11) NOT NULL,
+  FOREIGN KEY(id_user) REFERENCES users(id_user)
+);
 
-INSERT INTO usuarios
-  (id_usuario, nombre_usuario, password_usuario)
+INSERT INTO user_type
+  (type_description)
 VALUES
-  (2, "mariana", "mariana123");
+  ("Admin");
 
-INSERT INTO usuarios
-  (id_usuario, nombre_usuario, password_usuario)
+INSERT INTO user_type
+  (type_description)
 VALUES
-  (3, "fher", "fher123");
+  ("Normal");
+
+INSERT INTO users
+  (id_user, username, password, first_name, second_name, user_type)
+VALUES
+  (1, "admin", "admin123", "Admin", "Admin",1);
+
+INSERT INTO users
+  (id_user, username, password, first_name, second_name, user_type)
+VALUES
+  (2, "mariana", "mariana123", "Mariana", "Hinojosa",2);
+
+INSERT INTO users
+  (id_user, username, password, first_name, second_name, user_type)
+VALUES
+  (3, "fher", "fher123", "Fher", "Torres",2);
+

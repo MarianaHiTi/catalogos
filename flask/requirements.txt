@@ -6,3 +6,5 @@ mysql-connector
 typing
 pymongo
 flask_mongoengine
+flask-mysqldb
+flask-login

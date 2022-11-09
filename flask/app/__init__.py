@@ -1,7 +1,7 @@
 from flask import Flask
 import time
 
-time.sleep(10)
+time.sleep(40)
 
 app = Flask(__name__)
 

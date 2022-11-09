@@ -7,14 +7,20 @@
 
 /* eslint-disable camelcase */
 
-(function ($) {
+;(function ($) {
   'use strict'
 
   setTimeout(function () {
-    if (window.___browserSync___ === undefined && Number(localStorage.getItem('AdminLTE:Demo:MessageShowed')) < Date.now()) {
-      localStorage.setItem('AdminLTE:Demo:MessageShowed', (Date.now()) + (15 * 60 * 1000))
+    if (
+      window.___browserSync___ === undefined &&
+      Number(localStorage.getItem('AdminLTE:Demo:MessageShowed')) < Date.now()
+    ) {
+      localStorage.setItem(
+        'AdminLTE:Demo:MessageShowed',
+        Date.now() + 15 * 60 * 1000
+      )
       // eslint-disable-next-line no-alert
-      alert('You load AdminLTE\'s "demo.js", \nthis file is only created for testing purposes!')
+      //alert('You load AdminLTE\'s "demo.js", \nthis file is only created for testing purposes!')
     }
   }, 1000)
 
@@ -24,12 +30,15 @@
 
   function createSkinBlock(colors, callback, noneSelected) {
     var $block = $('<select />', {
-      class: noneSelected ? 'custom-select mb-3 border-0' : 'custom-select mb-3 text-light border-0 ' + colors[0].replace(/accent-|navbar-/, 'bg-')
+      class: noneSelected
+        ? 'custom-select mb-3 border-0'
+        : 'custom-select mb-3 text-light border-0 ' +
+          colors[0].replace(/accent-|navbar-/, 'bg-'),
     })
 
     if (noneSelected) {
       var $default = $('<option />', {
-        text: 'None Selected'
+        text: 'None Selected',
       })
 
       $block.append($default)
@@ -37,8 +46,14 @@
 
     colors.forEach(function (color) {
       var $color = $('<option />', {
-        class: (typeof color === 'object' ? color.join(' ') : color).replace('navbar-', 'bg-').replace('accent-', 'bg-'),
-        text: capitalizeFirstLetter((typeof color === 'object' ? color.join(' ') : color).replace(/navbar-|accent-|bg-/, '').replace('-', ' '))
+        class: (typeof color === 'object' ? color.join(' ') : color)
+          .replace('navbar-', 'bg-')
+          .replace('accent-', 'bg-'),
+        text: capitalizeFirstLetter(
+          (typeof color === 'object' ? color.join(' ') : color)
+            .replace(/navbar-|accent-|bg-/, '')
+            .replace('-', ' ')
+        ),
       })
 
       $block.append($color)
@@ -52,22 +67,20 @@
 
   var $sidebar = $('.control-sidebar')
   var $container = $('<div />', {
-    class: 'p-3 control-sidebar-content'
+    class: 'p-3 control-sidebar-content',
   })
 
   $sidebar.append($container)
 
   // Checkboxes
 
-  $container.append(
-    '<h5>Customize AdminLTE</h5><hr class="mb-2"/>'
-  )
+  $container.append('<h5>Customize AdminLTE</h5><hr class="mb-2"/>')
 
   var $dark_mode_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('dark-mode'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('dark-mode')
@@ -75,7 +88,9 @@
       $('body').removeClass('dark-mode')
     }
   })
-  var $dark_mode_container = $('<div />', { class: 'mb-4' }).append($dark_mode_checkbox).append('<span>Dark Mode</span>')
+  var $dark_mode_container = $('<div />', { class: 'mb-4' })
+    .append($dark_mode_checkbox)
+    .append('<span>Dark Mode</span>')
   $container.append($dark_mode_container)
 
   $container.append('<h6>Header Options</h6>')
@@ -83,7 +98,7 @@
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('layout-navbar-fixed'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('layout-navbar-fixed')
@@ -91,14 +106,16 @@
       $('body').removeClass('layout-navbar-fixed')
     }
   })
-  var $header_fixed_container = $('<div />', { class: 'mb-1' }).append($header_fixed_checkbox).append('<span>Fixed</span>')
+  var $header_fixed_container = $('<div />', { class: 'mb-1' })
+    .append($header_fixed_checkbox)
+    .append('<span>Fixed</span>')
   $container.append($header_fixed_container)
 
   var $dropdown_legacy_offset_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.main-header').hasClass('dropdown-legacy'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.main-header').addClass('dropdown-legacy')
@@ -106,14 +123,16 @@
       $('.main-header').removeClass('dropdown-legacy')
     }
   })
-  var $dropdown_legacy_offset_container = $('<div />', { class: 'mb-1' }).append($dropdown_legacy_offset_checkbox).append('<span>Dropdown Legacy Offset</span>')
+  var $dropdown_legacy_offset_container = $('<div />', { class: 'mb-1' })
+    .append($dropdown_legacy_offset_checkbox)
+    .append('<span>Dropdown Legacy Offset</span>')
   $container.append($dropdown_legacy_offset_container)
 
   var $no_border_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.main-header').hasClass('border-bottom-0'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.main-header').addClass('border-bottom-0')
@@ -121,7 +140,9 @@
       $('.main-header').removeClass('border-bottom-0')
     }
   })
-  var $no_border_container = $('<div />', { class: 'mb-4' }).append($no_border_checkbox).append('<span>No border</span>')
+  var $no_border_container = $('<div />', { class: 'mb-4' })
+    .append($no_border_checkbox)
+    .append('<span>No border</span>')
   $container.append($no_border_container)
 
   $container.append('<h6>Sidebar Options</h6>')
@@ -130,7 +151,7 @@
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('sidebar-collapse'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('sidebar-collapse')
@@ -140,12 +161,18 @@
       $(window).trigger('resize')
     }
   })
-  var $sidebar_collapsed_container = $('<div />', { class: 'mb-1' }).append($sidebar_collapsed_checkbox).append('<span>Collapsed</span>')
+  var $sidebar_collapsed_container = $('<div />', { class: 'mb-1' })
+    .append($sidebar_collapsed_checkbox)
+    .append('<span>Collapsed</span>')
   $container.append($sidebar_collapsed_container)
 
-  $(document).on('collapsed.lte.pushmenu', '[data-widget="pushmenu"]', function () {
-    $sidebar_collapsed_checkbox.prop('checked', true)
-  })
+  $(document).on(
+    'collapsed.lte.pushmenu',
+    '[data-widget="pushmenu"]',
+    function () {
+      $sidebar_collapsed_checkbox.prop('checked', true)
+    }
+  )
   $(document).on('shown.lte.pushmenu', '[data-widget="pushmenu"]', function () {
     $sidebar_collapsed_checkbox.prop('checked', false)
   })
@@ -154,7 +181,7 @@
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('layout-fixed'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('layout-fixed')
@@ -164,14 +191,16 @@
       $(window).trigger('resize')
     }
   })
-  var $sidebar_fixed_container = $('<div />', { class: 'mb-1' }).append($sidebar_fixed_checkbox).append('<span>Fixed</span>')
+  var $sidebar_fixed_container = $('<div />', { class: 'mb-1' })
+    .append($sidebar_fixed_checkbox)
+    .append('<span>Fixed</span>')
   $container.append($sidebar_fixed_container)
 
   var $sidebar_mini_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('sidebar-mini'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('sidebar-mini')
@@ -179,14 +208,16 @@
       $('body').removeClass('sidebar-mini')
     }
   })
-  var $sidebar_mini_container = $('<div />', { class: 'mb-1' }).append($sidebar_mini_checkbox).append('<span>Sidebar Mini</span>')
+  var $sidebar_mini_container = $('<div />', { class: 'mb-1' })
+    .append($sidebar_mini_checkbox)
+    .append('<span>Sidebar Mini</span>')
   $container.append($sidebar_mini_container)
 
   var $sidebar_mini_md_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('sidebar-mini-md'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('sidebar-mini-md')
@@ -194,14 +225,16 @@
       $('body').removeClass('sidebar-mini-md')
     }
   })
-  var $sidebar_mini_md_container = $('<div />', { class: 'mb-1' }).append($sidebar_mini_md_checkbox).append('<span>Sidebar Mini MD</span>')
+  var $sidebar_mini_md_container = $('<div />', { class: 'mb-1' })
+    .append($sidebar_mini_md_checkbox)
+    .append('<span>Sidebar Mini MD</span>')
   $container.append($sidebar_mini_md_container)
 
   var $sidebar_mini_xs_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('sidebar-mini-xs'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('sidebar-mini-xs')
@@ -209,14 +242,16 @@
       $('body').removeClass('sidebar-mini-xs')
     }
   })
-  var $sidebar_mini_xs_container = $('<div />', { class: 'mb-1' }).append($sidebar_mini_xs_checkbox).append('<span>Sidebar Mini XS</span>')
+  var $sidebar_mini_xs_container = $('<div />', { class: 'mb-1' })
+    .append($sidebar_mini_xs_checkbox)
+    .append('<span>Sidebar Mini XS</span>')
   $container.append($sidebar_mini_xs_container)
 
   var $flat_sidebar_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.nav-sidebar').hasClass('nav-flat'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.nav-sidebar').addClass('nav-flat')
@@ -224,14 +259,16 @@
       $('.nav-sidebar').removeClass('nav-flat')
     }
   })
-  var $flat_sidebar_container = $('<div />', { class: 'mb-1' }).append($flat_sidebar_checkbox).append('<span>Nav Flat Style</span>')
+  var $flat_sidebar_container = $('<div />', { class: 'mb-1' })
+    .append($flat_sidebar_checkbox)
+    .append('<span>Nav Flat Style</span>')
   $container.append($flat_sidebar_container)
 
   var $legacy_sidebar_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.nav-sidebar').hasClass('nav-legacy'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.nav-sidebar').addClass('nav-legacy')
@@ -239,14 +276,16 @@
       $('.nav-sidebar').removeClass('nav-legacy')
     }
   })
-  var $legacy_sidebar_container = $('<div />', { class: 'mb-1' }).append($legacy_sidebar_checkbox).append('<span>Nav Legacy Style</span>')
+  var $legacy_sidebar_container = $('<div />', { class: 'mb-1' })
+    .append($legacy_sidebar_checkbox)
+    .append('<span>Nav Legacy Style</span>')
   $container.append($legacy_sidebar_container)
 
   var $compact_sidebar_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.nav-sidebar').hasClass('nav-compact'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.nav-sidebar').addClass('nav-compact')
@@ -254,14 +293,16 @@
       $('.nav-sidebar').removeClass('nav-compact')
     }
   })
-  var $compact_sidebar_container = $('<div />', { class: 'mb-1' }).append($compact_sidebar_checkbox).append('<span>Nav Compact</span>')
+  var $compact_sidebar_container = $('<div />', { class: 'mb-1' })
+    .append($compact_sidebar_checkbox)
+    .append('<span>Nav Compact</span>')
   $container.append($compact_sidebar_container)
 
   var $child_indent_sidebar_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.nav-sidebar').hasClass('nav-child-indent'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.nav-sidebar').addClass('nav-child-indent')
@@ -269,14 +310,16 @@
       $('.nav-sidebar').removeClass('nav-child-indent')
     }
   })
-  var $child_indent_sidebar_container = $('<div />', { class: 'mb-1' }).append($child_indent_sidebar_checkbox).append('<span>Nav Child Indent</span>')
+  var $child_indent_sidebar_container = $('<div />', { class: 'mb-1' })
+    .append($child_indent_sidebar_checkbox)
+    .append('<span>Nav Child Indent</span>')
   $container.append($child_indent_sidebar_container)
 
   var $child_hide_sidebar_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.nav-sidebar').hasClass('nav-collapse-hide-child'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.nav-sidebar').addClass('nav-collapse-hide-child')
@@ -284,14 +327,16 @@
       $('.nav-sidebar').removeClass('nav-collapse-hide-child')
     }
   })
-  var $child_hide_sidebar_container = $('<div />', { class: 'mb-1' }).append($child_hide_sidebar_checkbox).append('<span>Nav Child Hide on Collapse</span>')
+  var $child_hide_sidebar_container = $('<div />', { class: 'mb-1' })
+    .append($child_hide_sidebar_checkbox)
+    .append('<span>Nav Child Hide on Collapse</span>')
   $container.append($child_hide_sidebar_container)
 
   var $no_expand_sidebar_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.main-sidebar').hasClass('sidebar-no-expand'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.main-sidebar').addClass('sidebar-no-expand')
@@ -299,7 +344,9 @@
       $('.main-sidebar').removeClass('sidebar-no-expand')
     }
   })
-  var $no_expand_sidebar_container = $('<div />', { class: 'mb-4' }).append($no_expand_sidebar_checkbox).append('<span>Disable Hover/Focus Auto-Expand</span>')
+  var $no_expand_sidebar_container = $('<div />', { class: 'mb-4' })
+    .append($no_expand_sidebar_checkbox)
+    .append('<span>Disable Hover/Focus Auto-Expand</span>')
   $container.append($no_expand_sidebar_container)
 
   $container.append('<h6>Footer Options</h6>')
@@ -307,7 +354,7 @@
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('layout-footer-fixed'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('layout-footer-fixed')
@@ -315,7 +362,9 @@
       $('body').removeClass('layout-footer-fixed')
     }
   })
-  var $footer_fixed_container = $('<div />', { class: 'mb-4' }).append($footer_fixed_checkbox).append('<span>Fixed</span>')
+  var $footer_fixed_container = $('<div />', { class: 'mb-4' })
+    .append($footer_fixed_checkbox)
+    .append('<span>Fixed</span>')
   $container.append($footer_fixed_container)
 
   $container.append('<h6>Small Text Options</h6>')
@@ -324,7 +373,7 @@
     type: 'checkbox',
     value: 1,
     checked: $('body').hasClass('text-sm'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('body').addClass('text-sm')
@@ -332,14 +381,16 @@
       $('body').removeClass('text-sm')
     }
   })
-  var $text_sm_body_container = $('<div />', { class: 'mb-1' }).append($text_sm_body_checkbox).append('<span>Body</span>')
+  var $text_sm_body_container = $('<div />', { class: 'mb-1' })
+    .append($text_sm_body_checkbox)
+    .append('<span>Body</span>')
   $container.append($text_sm_body_container)
 
   var $text_sm_header_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.main-header').hasClass('text-sm'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.main-header').addClass('text-sm')
@@ -347,14 +398,16 @@
       $('.main-header').removeClass('text-sm')
     }
   })
-  var $text_sm_header_container = $('<div />', { class: 'mb-1' }).append($text_sm_header_checkbox).append('<span>Navbar</span>')
+  var $text_sm_header_container = $('<div />', { class: 'mb-1' })
+    .append($text_sm_header_checkbox)
+    .append('<span>Navbar</span>')
   $container.append($text_sm_header_container)
 
   var $text_sm_brand_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.brand-link').hasClass('text-sm'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.brand-link').addClass('text-sm')
@@ -362,14 +415,16 @@
       $('.brand-link').removeClass('text-sm')
     }
   })
-  var $text_sm_brand_container = $('<div />', { class: 'mb-1' }).append($text_sm_brand_checkbox).append('<span>Brand</span>')
+  var $text_sm_brand_container = $('<div />', { class: 'mb-1' })
+    .append($text_sm_brand_checkbox)
+    .append('<span>Brand</span>')
   $container.append($text_sm_brand_container)
 
   var $text_sm_sidebar_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.nav-sidebar').hasClass('text-sm'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.nav-sidebar').addClass('text-sm')
@@ -377,14 +432,16 @@
       $('.nav-sidebar').removeClass('text-sm')
     }
   })
-  var $text_sm_sidebar_container = $('<div />', { class: 'mb-1' }).append($text_sm_sidebar_checkbox).append('<span>Sidebar Nav</span>')
+  var $text_sm_sidebar_container = $('<div />', { class: 'mb-1' })
+    .append($text_sm_sidebar_checkbox)
+    .append('<span>Sidebar Nav</span>')
   $container.append($text_sm_sidebar_container)
 
   var $text_sm_footer_checkbox = $('<input />', {
     type: 'checkbox',
     value: 1,
     checked: $('.main-footer').hasClass('text-sm'),
-    class: 'mr-1'
+    class: 'mr-1',
   }).on('click', function () {
     if ($(this).is(':checked')) {
       $('.main-footer').addClass('text-sm')
@@ -392,7 +449,9 @@
       $('.main-footer').removeClass('text-sm')
     }
   })
-  var $text_sm_footer_container = $('<div />', { class: 'mb-4' }).append($text_sm_footer_checkbox).append('<span>Footer</span>')
+  var $text_sm_footer_container = $('<div />', { class: 'mb-4' })
+    .append($text_sm_footer_checkbox)
+    .append('<span>Footer</span>')
   $container.append($text_sm_footer_container)
 
   // Color Arrays
@@ -412,14 +471,14 @@
     'navbar-cyan',
     'navbar-dark',
     'navbar-gray-dark',
-    'navbar-gray'
+    'navbar-gray',
   ]
 
   var navbar_light_skins = [
     'navbar-light',
     'navbar-warning',
     'navbar-white',
-    'navbar-orange'
+    'navbar-orange',
   ]
 
   var sidebar_colors = [
@@ -438,7 +497,7 @@
     'bg-orange',
     'bg-lime',
     'bg-teal',
-    'bg-olive'
+    'bg-olive',
   ]
 
   var accent_colors = [
@@ -457,7 +516,7 @@
     'accent-orange',
     'accent-lime',
     'accent-teal',
-    'accent-olive'
+    'accent-olive',
   ]
 
   var sidebar_skins = [
@@ -492,7 +551,7 @@
     'sidebar-light-orange',
     'sidebar-light-lime',
     'sidebar-light-teal',
-    'sidebar-light-olive'
+    'sidebar-light-olive',
   ]
 
   // Navbar Variants
@@ -500,7 +559,7 @@
   $container.append('<h6>Navbar Variants</h6>')
 
   var $navbar_variants = $('<div />', {
-    class: 'd-flex'
+    class: 'd-flex',
   })
   var navbar_all_colors = navbar_dark_skins.concat(navbar_light_skins)
   var $navbar_variants_colors = createSkinBlock(navbar_all_colors, function () {
@@ -526,13 +585,21 @@
 
   var active_navbar_color = null
   $('.main-header')[0].classList.forEach(function (className) {
-    if (navbar_all_colors.indexOf(className) > -1 && active_navbar_color === null) {
+    if (
+      navbar_all_colors.indexOf(className) > -1 &&
+      active_navbar_color === null
+    ) {
       active_navbar_color = className.replace('navbar-', 'bg-')
     }
   })
 
-  $navbar_variants_colors.find('option.' + active_navbar_color).prop('selected', true)
-  $navbar_variants_colors.removeClass().addClass('custom-select mb-3 text-light border-0 ').addClass(active_navbar_color)
+  $navbar_variants_colors
+    .find('option.' + active_navbar_color)
+    .prop('selected', true)
+  $navbar_variants_colors
+    .removeClass()
+    .addClass('custom-select mb-3 text-light border-0 ')
+    .addClass(active_navbar_color)
 
   $navbar_variants.append($navbar_variants_colors)
 
@@ -542,20 +609,26 @@
 
   $container.append('<h6>Accent Color Variants</h6>')
   var $accent_variants = $('<div />', {
-    class: 'd-flex'
+    class: 'd-flex',
   })
   $container.append($accent_variants)
-  $container.append(createSkinBlock(accent_colors, function () {
-    var color = $(this).find('option:selected').attr('class')
-    var $body = $('body')
-    accent_colors.forEach(function (skin) {
-      $body.removeClass(skin)
-    })
+  $container.append(
+    createSkinBlock(
+      accent_colors,
+      function () {
+        var color = $(this).find('option:selected').attr('class')
+        var $body = $('body')
+        accent_colors.forEach(function (skin) {
+          $body.removeClass(skin)
+        })
 
-    var accent_color_class = color.replace('bg-', 'accent-')
+        var accent_color_class = color.replace('bg-', 'accent-')
 
-    $body.addClass(accent_color_class)
-  }, true))
+        $body.addClass(accent_color_class)
+      },
+      true
+    )
+  )
 
   var active_accent_color = null
   $('body')[0].classList.forEach(function (className) {
@@ -569,110 +642,158 @@
 
   $container.append('<h6>Dark Sidebar Variants</h6>')
   var $sidebar_variants_dark = $('<div />', {
-    class: 'd-flex'
+    class: 'd-flex',
   })
   $container.append($sidebar_variants_dark)
-  var $sidebar_dark_variants = createSkinBlock(sidebar_colors, function () {
-    var color = $(this).find('option:selected').attr('class')
-    var sidebar_class = 'sidebar-dark-' + color.replace('bg-', '')
-    var $sidebar = $('.main-sidebar')
-    sidebar_skins.forEach(function (skin) {
-      $sidebar.removeClass(skin)
-      $sidebar_light_variants.removeClass(skin.replace('sidebar-dark-', 'bg-')).removeClass('text-light')
-    })
+  var $sidebar_dark_variants = createSkinBlock(
+    sidebar_colors,
+    function () {
+      var color = $(this).find('option:selected').attr('class')
+      var sidebar_class = 'sidebar-dark-' + color.replace('bg-', '')
+      var $sidebar = $('.main-sidebar')
+      sidebar_skins.forEach(function (skin) {
+        $sidebar.removeClass(skin)
+        $sidebar_light_variants
+          .removeClass(skin.replace('sidebar-dark-', 'bg-'))
+          .removeClass('text-light')
+      })
 
-    $(this).removeClass().addClass('custom-select mb-3 text-light border-0').addClass(color)
+      $(this)
+        .removeClass()
+        .addClass('custom-select mb-3 text-light border-0')
+        .addClass(color)
 
-    $sidebar_light_variants.find('option').prop('selected', false)
-    $sidebar.addClass(sidebar_class)
-    $('.sidebar').removeClass('os-theme-dark').addClass('os-theme-light')
-  }, true)
+      $sidebar_light_variants.find('option').prop('selected', false)
+      $sidebar.addClass(sidebar_class)
+      $('.sidebar').removeClass('os-theme-dark').addClass('os-theme-light')
+    },
+    true
+  )
   $container.append($sidebar_dark_variants)
 
   var active_sidebar_dark_color = null
   $('.main-sidebar')[0].classList.forEach(function (className) {
     var color = className.replace('sidebar-dark-', 'bg-')
-    if (sidebar_colors.indexOf(color) > -1 && active_sidebar_dark_color === null) {
+    if (
+      sidebar_colors.indexOf(color) > -1 &&
+      active_sidebar_dark_color === null
+    ) {
       active_sidebar_dark_color = color
     }
   })
 
-  $sidebar_dark_variants.find('option.' + active_sidebar_dark_color).prop('selected', true)
-  $sidebar_dark_variants.removeClass().addClass('custom-select mb-3 text-light border-0 ').addClass(active_sidebar_dark_color)
+  $sidebar_dark_variants
+    .find('option.' + active_sidebar_dark_color)
+    .prop('selected', true)
+  $sidebar_dark_variants
+    .removeClass()
+    .addClass('custom-select mb-3 text-light border-0 ')
+    .addClass(active_sidebar_dark_color)
 
   $container.append('<h6>Light Sidebar Variants</h6>')
   var $sidebar_variants_light = $('<div />', {
-    class: 'd-flex'
+    class: 'd-flex',
   })
   $container.append($sidebar_variants_light)
-  var $sidebar_light_variants = createSkinBlock(sidebar_colors, function () {
-    var color = $(this).find('option:selected').attr('class')
-    var sidebar_class = 'sidebar-light-' + color.replace('bg-', '')
-    var $sidebar = $('.main-sidebar')
-    sidebar_skins.forEach(function (skin) {
-      $sidebar.removeClass(skin)
-      $sidebar_dark_variants.removeClass(skin.replace('sidebar-light-', 'bg-')).removeClass('text-light')
-    })
+  var $sidebar_light_variants = createSkinBlock(
+    sidebar_colors,
+    function () {
+      var color = $(this).find('option:selected').attr('class')
+      var sidebar_class = 'sidebar-light-' + color.replace('bg-', '')
+      var $sidebar = $('.main-sidebar')
+      sidebar_skins.forEach(function (skin) {
+        $sidebar.removeClass(skin)
+        $sidebar_dark_variants
+          .removeClass(skin.replace('sidebar-light-', 'bg-'))
+          .removeClass('text-light')
+      })
 
-    $(this).removeClass().addClass('custom-select mb-3 text-light border-0').addClass(color)
+      $(this)
+        .removeClass()
+        .addClass('custom-select mb-3 text-light border-0')
+        .addClass(color)
 
-    $sidebar_dark_variants.find('option').prop('selected', false)
-    $sidebar.addClass(sidebar_class)
-    $('.sidebar').removeClass('os-theme-light').addClass('os-theme-dark')
-  }, true)
+      $sidebar_dark_variants.find('option').prop('selected', false)
+      $sidebar.addClass(sidebar_class)
+      $('.sidebar').removeClass('os-theme-light').addClass('os-theme-dark')
+    },
+    true
+  )
   $container.append($sidebar_light_variants)
 
   var active_sidebar_light_color = null
   $('.main-sidebar')[0].classList.forEach(function (className) {
     var color = className.replace('sidebar-light-', 'bg-')
-    if (sidebar_colors.indexOf(color) > -1 && active_sidebar_light_color === null) {
+    if (
+      sidebar_colors.indexOf(color) > -1 &&
+      active_sidebar_light_color === null
+    ) {
       active_sidebar_light_color = color
     }
   })
 
   if (active_sidebar_light_color !== null) {
-    $sidebar_light_variants.find('option.' + active_sidebar_light_color).prop('selected', true)
-    $sidebar_light_variants.removeClass().addClass('custom-select mb-3 text-light border-0 ').addClass(active_sidebar_light_color)
+    $sidebar_light_variants
+      .find('option.' + active_sidebar_light_color)
+      .prop('selected', true)
+    $sidebar_light_variants
+      .removeClass()
+      .addClass('custom-select mb-3 text-light border-0 ')
+      .addClass(active_sidebar_light_color)
   }
 
   var logo_skins = navbar_all_colors
   $container.append('<h6>Brand Logo Variants</h6>')
   var $logo_variants = $('<div />', {
-    class: 'd-flex'
+    class: 'd-flex',
   })
   $container.append($logo_variants)
   var $clear_btn = $('<a />', {
-    href: '#'
-  }).text('clear').on('click', function (e) {
-    e.preventDefault()
-    var $logo = $('.brand-link')
-    logo_skins.forEach(function (skin) {
-      $logo.removeClass(skin)
-    })
+    href: '#',
   })
-
-  var $brand_variants = createSkinBlock(logo_skins, function () {
-    var color = $(this).find('option:selected').attr('class')
-    var $logo = $('.brand-link')
-
-    if (color === 'navbar-light' || color === 'navbar-white') {
-      $logo.addClass('text-black')
-    } else {
-      $logo.removeClass('text-black')
-    }
-
-    logo_skins.forEach(function (skin) {
-      $logo.removeClass(skin)
+    .text('clear')
+    .on('click', function (e) {
+      e.preventDefault()
+      var $logo = $('.brand-link')
+      logo_skins.forEach(function (skin) {
+        $logo.removeClass(skin)
+      })
     })
 
-    if (color) {
-      $(this).removeClass().addClass('custom-select mb-3 border-0').addClass(color).addClass(color !== 'navbar-light' && color !== 'navbar-white' ? 'text-light' : '')
-    } else {
-      $(this).removeClass().addClass('custom-select mb-3 border-0')
-    }
+  var $brand_variants = createSkinBlock(
+    logo_skins,
+    function () {
+      var color = $(this).find('option:selected').attr('class')
+      var $logo = $('.brand-link')
 
-    $logo.addClass(color)
-  }, true).append($clear_btn)
+      if (color === 'navbar-light' || color === 'navbar-white') {
+        $logo.addClass('text-black')
+      } else {
+        $logo.removeClass('text-black')
+      }
+
+      logo_skins.forEach(function (skin) {
+        $logo.removeClass(skin)
+      })
+
+      if (color) {
+        $(this)
+          .removeClass()
+          .addClass('custom-select mb-3 border-0')
+          .addClass(color)
+          .addClass(
+            color !== 'navbar-light' && color !== 'navbar-white'
+              ? 'text-light'
+              : ''
+          )
+      } else {
+        $(this).removeClass().addClass('custom-select mb-3 border-0')
+      }
+
+      $logo.addClass(color)
+    },
+    true
+  ).append($clear_btn)
   $container.append($brand_variants)
 
   var active_brand_color = null
@@ -684,6 +805,9 @@
 
   if (active_brand_color) {
     $brand_variants.find('option.' + active_brand_color).prop('selected', true)
-    $brand_variants.removeClass().addClass('custom-select mb-3 text-light border-0 ').addClass(active_brand_color)
+    $brand_variants
+      .removeClass()
+      .addClass('custom-select mb-3 text-light border-0 ')
+      .addClass(active_brand_color)
   }
 })(jQuery)

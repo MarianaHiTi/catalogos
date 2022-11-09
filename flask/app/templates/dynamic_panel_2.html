@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AdminLTE 3 | Dashboard</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='plugins/fontawesome-free/css/all.min.css') }}"
+    />
+    <!-- Ionicons -->
+    <link
+      rel="stylesheet"
+      href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    />
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}"
+    />
+    <!-- iCheck -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}"
+    />
+    <!-- JQVMap -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='plugins/jqvmap/jqvmap.min.css') }}"
+    />
+    <!-- Theme style -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='dist/css/adminlte.min.css') }}"
+    />
+    <!-- overlayScrollbars -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}"
+    />
+    <!-- Daterange picker -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='plugins/daterangepicker/daterangepicker.css') }}"
+    />
+    <!-- summernote -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='plugins/summernote/summernote-bs4.min.css') }}"
+    />
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <!-- Preloader -->
+      <div
+        class="preloader flex-column justify-content-center align-items-center"
+      >
+        <img
+          class="animation__shake"
+          src="{{ url_for('static',filename='dist/img/AdminLTELogo.png') }}"
+          alt="AdminLTELogo"
+          height="60"
+          width="60"
+        />
+      </div>
+
+      <!-- Navbar -->
+      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
+              ><i class="fas fa-bars"></i
+            ></a>
+          </li>
+          <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Contact</a>
+          </li>
+        </ul>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+          <!-- Navbar Search -->
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              data-widget="navbar-search"
+              href="#"
+              role="button"
+            >
+              <i class="fas fa-search"></i>
+            </a>
+            <div class="navbar-search-block">
+              <form class="form-inline">
+                <div class="input-group input-group-sm">
+                  <input
+                    class="form-control form-control-navbar"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-navbar" type="submit">
+                      <i class="fas fa-search"></i>
+                    </button>
+                    <button
+                      class="btn btn-navbar"
+                      type="button"
+                      data-widget="navbar-search"
+                    >
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+              <i class="fas fa-expand-arrows-alt"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              data-widget="control-sidebar"
+              data-controlsidebar-slide="true"
+              href="#"
+              role="button"
+            >
+              <i class="fas fa-th-large"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.navbar -->
+
+      <!-- Main Sidebar Container -->
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+        <a href="index3.html" class="brand-link">
+          <img
+            src="{{ url_for('static',filename='dist/img/AdminLTELogo.png') }}"
+            alt="AdminLTE Logo"
+            class="brand-image img-circle elevation-3"
+            style="opacity: 0.8"
+          />
+          <span class="brand-text font-weight-light">Catálogos</span>
+        </a>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <!-- Sidebar user panel (optional) -->
+          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+              <img
+                src="{{ url_for('static',filename='dist/img/user2-160x160.jpg') }}"
+                class="img-circle elevation-2"
+                alt="User Image"
+              />
+            </div>
+            <div class="info">
+              <a href="#" class="d-block">User</a>
+            </div>
+          </div>
+
+          <!-- SidebarSearch Form -->
+          <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+              <input
+                class="form-control form-control-sidebar"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-sidebar">
+                  <i class="fas fa-search fa-fw"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar Menu -->
+          <nav class="mt-2">
+            <ul
+              class="nav nav-pills nav-sidebar flex-column"
+              data-widget="treeview"
+              role="menu"
+              data-accordion="false"
+            >
+              <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+              <li class="nav-item menu-open">
+                <a href="#" class="nav-link active">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>
+                    Dashboard
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="adminlte" class="nav-link active">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Dashboard v1</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="nav-item">
+                <a href="agregar_catalogo" class="nav-link">
+                  <i class="nav-icon fas fa-edit"></i>
+                  <p>Agregar catálogo</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="catalogos" class="nav-link">
+                  <i class="nav-icon fas fa-book"></i>
+                  <p>Catálogos</p>
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
+      </aside>
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 class="m-0">Dashboard</h1>
+              </div>
+              <!-- /.col -->
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active">Dashboard v1</li>
+                </ol>
+              </div>
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </div>
+          <!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <!-- /.row -->
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+              <!-- ./col -->
+              <div class="col-lg-12 col-6">
+                <!-- small box -->
+                <div class="card card-primary">
+                  <div class="card-header">
+                    <h3 class="card-title"><b>Patrones, edad, sexo</b></h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <!-- form start -->
+                  <form id = "filter">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-1">
+                          <label>Producto</label>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="form-group">
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="checkbox"
+                                id="graph"
+                                name="x"
+                                value="Graph"
+                                autocomplete="off"
+                              />
+                              <label for="graph" class="custom-control-label"
+                                >Graph</label
+                              >
+                            </div>
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="checkbox"
+                                id="map"
+                                name="x"
+                                value="Map"
+                                autocomplete="off"
+                              />
+                              <label for="map" class="custom-control-label"
+                                >Map</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="form-group">
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="radio"
+                                id="100k"
+                                name="populationRadio"
+                              />
+                              <label for="100k" class="custom-control-label"
+                                >100k</label
+                              >
+                            </div>
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="radio"
+                                id="10k"
+                                name="populationRadio"
+
+                              />
+                              <label for="10k" class="custom-control-label"
+                                >10k</label
+                              >
+                            </div>
+
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="radio"
+                                id="percentage"
+                                name="populationRadio"
+
+                              />
+                              <label for="percentage" class="custom-control-label"
+                                >%</label
+                              >
+                            </div>
+
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="radio"
+                                id="accumulative"
+                                name="populationRadio"
+                                checked
+                              />
+                              <label for="accumulative" class="custom-control-label"
+                                >Accum.</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class=row>
+                        <div class="col-sm-1">
+                          <label>Sexo</label>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="row">
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="checkbox"
+                                id="hombres"
+                                name="y"
+                                value="Hombres"
+                                autocomplete="off"
+                              />
+                              <label for="hombres" class="custom-control-label"
+                                >Hombres</label
+                              >
+                            </div>
+                            <div class="custom-control custom-radio">
+                              <input
+                                class="custom-control-input"
+                                type="checkbox"
+                                id="mujeres"
+                                name="y"
+                                value="Mujeres"
+                                autocomplete="off"
+                              />
+                              <label for="mujeres" class="custom-control-label"
+                                >Mujeres</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="canvas">
+                      </div>
+                      </div>
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer"></div>
+                  </form>
+                </div>
+                <!-- /.card -->
+              <!-- ./col -->
+
+              <!-- ./col -->
+            </div>
+            <!-- /.row -->
+            <!-- Main row -->
+          </div>
+          <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+      <footer class="main-footer">
+        <strong
+          >Copyright &copy; 2014-2021
+          <a href="https://adminlte.io">AdminLTE.io</a>.</strong
+        >
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+          <b>Version</b> 3.2.0
+        </div>
+      </footer>
+
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+      </aside>
+      <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static',filename='plugins/jquery/jquery.min.js') }}"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="{{ url_for('static',filename='plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+      $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <!-- Bootstrap 4 -->
+    <script src="{{ url_for('static',filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- ChartJS -->
+    <script src="{{ url_for('static',filename='plugins/chart.js/Chart.min.js') }}"></script>
+    <!-- Sparkline -->
+    <script src="{{ url_for('static',filename='plugins/sparklines/sparkline.js') }}"></script>
+    <!-- JQVMap -->
+    <script src="{{ url_for('static',filename='plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="{{ url_for('static',filename='plugins/jquery-knob/jquery.knob.min.js') }}"></script>
+    <!-- daterangepicker -->
+    <script src="{{ url_for('static',filename='plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="{{ url_for('static',filename='plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <!-- Summernote -->
+    <script src="{{ url_for('static',filename='plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <!-- overlayScrollbars -->
+    <script src="{{ url_for('static',filename='plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ url_for('static',filename='dist/js/adminlte.js') }}"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="{{ url_for('static',filename='dist/js/demo.js') }}"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="{{ url_for('static',filename='dist/js/pages/dashboard.js') }}"></script>
+    <!-- FLOT CHARTS -->
+    <script src="{{ url_for('static',filename='plugins/flot/jquery.flot.js') }}"></script>
+    <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+    <script src="{{ url_for('static',filename='plugins/flot/plugins/jquery.flot.resize.js') }}"></script>
+    <!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+    <script src="{{ url_for('static',filename='plugins/flot/plugins/jquery.flot.pie.js') }}"></script>
+    <!-- AdminLTE App -->
+    <!--<script src="{{ url_for('static',filename='dist/js/adminlte.min.js') }}"></script>-->
+    <script src="{{ url_for('static',filename='dist/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='dist/mapa/jquery.maphighlight.min.js') }}"></script>
+
+    <script>
+      var formatsConfig = {
+        "img":["jpg", "jpeg", "png"],
+        "html":["html"]
+      };
+
+      function createPanels(totalPlots, paths){
+        var canvasDiv = document.getElementById('canvas');
+        canvasDiv.innerHTML = "";
+        var plotsByRow = 4;
+        var plotSize = 'col-sm-3';
+
+        var totalRows = Math.floor(totalPlots/plotsByRow);
+        var extraPlots = totalPlots%plotsByRow;
+
+        console.log(totalRows);
+        console.log(extraPlots);
+        
+        var counter = 0;
+        for (let i = 0; i < totalRows; i++) {
+          
+          let rowDiv = document.createElement('div');
+          rowDiv.setAttribute('class','row')
+          rowDiv.setAttribute('id','row'+i);
+          canvasDiv.appendChild(rowDiv);
+          for (let j = 0; j < plotsByRow; j++) {
+
+            let colDiv = document.createElement('div');
+            colDiv.setAttribute('class', plotSize)
+            colDiv.setAttribute('id','col'+i+'-'+j);
+            rowDiv.appendChild(colDiv);
+
+            let cardDiv = document.createElement('div');
+            cardDiv.setAttribute('class','card card-primary');
+            cardDiv.setAttribute('id','card_primary'+i+'-'+j);
+            colDiv.appendChild(cardDiv);
+
+            let cardBodyDiv = document.createElement('div');
+            cardBodyDiv.setAttribute('class', 'card-body');
+            cardBodyDiv.setAttribute('id','card_body'+i+'-'+j);
+            cardDiv.appendChild(cardBodyDiv);
+
+
+
+            let extension = getExtension(paths[counter]);
+            let elementName;
+            for (const [key, value] of Object.entries(formatsConfig)) {
+              if(value.includes(extension)){
+                elementName = key
+              }
+            }
+
+            if(elementName == "img"){
+              let img = document.createElement('img')
+              img.setAttribute('src',paths[counter]);
+              img.setAttribute('style','height: 100%; width: 100%; object-fit: contain');
+              img.setAttribute('alt','Imagen '+i+'-'+j);
+              cardBodyDiv.appendChild(img);
+              counter+=1;
+
+            }
+            
+          
+          }
+
+        }
+
+        let rowDiv = document.createElement('div');
+        rowDiv.setAttribute('class','row')
+        rowDiv.setAttribute('id','row'+totalRows);
+        canvasDiv.appendChild(rowDiv);
+
+        for (let i = 0; i < extraPlots; i++){
+
+          let colDiv = document.createElement('div');
+          colDiv.setAttribute('class', plotSize)
+          colDiv.setAttribute('id','col'+totalRows+'-'+i);
+          rowDiv.appendChild(colDiv);
+
+          let cardDiv = document.createElement('div');
+          cardDiv.setAttribute('class','card card-primary');
+          cardDiv.setAttribute('id','card_primary'+totalRows+'-'+i);
+          colDiv.appendChild(cardDiv);
+
+          let cardBodyDiv = document.createElement('div');
+          cardBodyDiv.setAttribute('class', 'card-body');
+          cardBodyDiv.setAttribute('id','card_body'+totalRows+'-'+i);
+          cardDiv.appendChild(cardBodyDiv);
+
+          let img = document.createElement('img')
+          img.setAttribute('src', paths[counter]);
+          img.setAttribute('style','height: 100%; width: 100%; object-fit: contain');
+          cardBodyDiv.appendChild(img);
+          counter+=1;
+
+          
+        }
+
+      }
+      
+
+
+
+      $(document).ready(function(){
+
+        let z;
+
+
+        alert(formatsConfig)
+        
+        $('#filter').change(function(){
+          var xArray = new Array();
+          var yArray = new Array();
+          $("input:checkbox[name=x]:checked").each(function(){
+            xArray.push($(this).val());
+          });
+          $("input:checkbox[name=y]:checked").each(function(){
+            yArray.push($(this).val());
+          });
+
+          //alert(xArray);
+          //alert(yArray);
+          get_panels(xArray,yArray,z);
+        });
+      });
+
+
+
+      function get_panels(xArray,yArray,zArray){      
+        $.ajax({
+          url:"/get_panels",
+          type:"GET",
+          data: {"x":xArray, "y":yArray},
+          success: function(response){
+            //alert(JSON.stringify(response));
+            //alert(response['total_files']);
+            createPanels(response['total_files'], response['paths']);
+
+            
+
+          },
+          error: function(error){
+            console.log(error);
+          },
+          });
+      }
+
+      function getExtension(filename){
+
+        let filenamePieces = filename.split(".")
+        return filenamePieces[filenamePieces.length-1]
+
+      }
+
+
+
+      
+      
+    </script>
+
+      </body>
+</html>

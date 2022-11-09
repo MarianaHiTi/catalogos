@@ -27,7 +27,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Agregar catalogo</h1>
+            <h1>Actualizar catalogo</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -47,7 +47,7 @@
               <!-- /.card-header -->
               <!-- form start -->
               {% block content %}
-                <form method="POST" action="/agregar_catalogo" enctype="multipart/form-data">
+                <form method="POST"  enctype="multipart/form-data" name="form">
                 <div class="card-body">
                     <div class="form-group">
                     {{ form.csrf_token }}

@@ -7,16 +7,17 @@ import os
 import base64
 from flask import request, render_template, jsonify, Response, flash, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import (StringField, TextAreaField, FileField, SelectField, PasswordField, validators)
-from wtforms.validators import InputRequired, Length, DataRequired, EqualTo
+from wtforms import (StringField, TextAreaField, FileField, SelectField, PasswordField, SubmitField, validators)
+from wtforms.validators import DataRequired, Email, EqualTo, Length, InputRequired
 from werkzeug.utils import secure_filename
 from app import app
 import time
 import glob
 from werkzeug.datastructures import MultiDict
+import hashlib
 
 
-app.config['SECRET_KEY']="admin123"
+app.config['SECRET_KEY']="catalogos"
 UPLOAD_FOLDER = '/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MYSQL_HOST'] = 'db'
@@ -45,17 +46,23 @@ class User(UserMixin):
 
 class ModelUser():
     @classmethod
-    def login(self, db, username):
+    def login(self, db, username, password):
         try:
             cursor = db.connection.cursor()
             sql = """SELECT id_user, username, password, first_name, second_name, user_type FROM users WHERE username = '{}'""".format(username)
             cursor.execute(sql)
             row = cursor.fetchone()
             if row != None:
-                user = User(row[0], row[1], row[2], row[3], row[4], row[5])
-                return user
-            else:
-                return None
+                print("SIUx2")
+                print("Siux2")
+                print(row[2],password)
+                print(type(password))
+                print(type(row[2]))
+                if(row[2] == password):
+                    print("LLEGO")
+                    user = User(row[0], row[1], row[2], row[3], row[4], row[5])
+                    return user
+            return None
         except Exception as ex:
             raise Exception(ex)
 
@@ -110,12 +117,12 @@ class CatalogoForm(FlaskForm):
 
 class UsuarioForm(FlaskForm):
     #time.sleep(180)
-    usuario = StringField('Usuario', [validators.Length(min=3, max=25)])
-    nombre = StringField('Nombre', [validators.Length(min=2, max=35)])
-    apellido = StringField('Apellido', [validators.Length(min=2, max=35)])
+    usuario = StringField('Usuario', validators=[Email(message='Ingrese un correo valido'),DataRequired(), ])
+    nombre = StringField('Nombre', validators=[DataRequired()])
+    apellido = StringField('Apellido', validators=[DataRequired()])
     tipo = SelectField(u'Tipo Usuario', choices=[('1', 'Admin'), ('2', 'Normal')])
-    password = PasswordField("Contraseña:", validators=[DataRequired(), Length(min=5)], id="password")
-    confirmar = PasswordField("Confirmar Contraseña:", validators=[DataRequired(), EqualTo('password', message="Las contraseñas no son iguales")], id="conpassword")
+    password = PasswordField('Contraseña', validators=[DataRequired()])
+    confirmar = PasswordField('Confirmar Contraseña', validators=[DataRequired(), EqualTo('password',message='Las contraseñas deben coincidir')])
  
 @app.route('/')
 def home():
@@ -134,19 +141,12 @@ def admin():
 @app.route('/join', methods=['POST'])
 def my_form_post():
     nombre_usuario = request.form['text1']
-    #word = request.args.get('text1')
     password_usuario = request.form['text2']
-    conn = conexion_db()
-    mycursor = conn.cursor()
-    user = ModelUser.login(db,nombre_usuario)
-    print("SIIU")
-    print(user.password)
-    print(password_usuario)
-    print(user.username)
+    password = hashlib.md5((password_usuario+app.config['SECRET_KEY']).encode()).hexdigest()
+    user = ModelUser.login(db,nombre_usuario, password)
     if(user):
-        if(user.password == password_usuario):
-            login_user(user)
-            return redirect(url_for('catalogos'))    
+        login_user(user)
+        return redirect(url_for('catalogos'))    
     return redirect(url_for('home'))
 
 
@@ -155,7 +155,7 @@ def my_form_post():
 def agregar_catalogo():
     form = CatalogoForm()
     if request.method == 'POST':
-        if form.is_submitted():
+        if form.validate_on_submit() and form.validate():
             nombre_catalogo = form.nombre.data
             descripcion_catalogo = form.descripcion.data
             file = request.files['file']
@@ -174,22 +174,20 @@ def agregar_catalogo():
 @login_required
 def agregar_usuario():
     form = UsuarioForm()
-    if request.method == 'POST':
-        if form.is_submitted():
-            usuario = form.usuario.data
-            nombre = form.nombre.data
-            apellido = form.apellido.data
-            password = form.password.data
-            tipo_usuario = form.tipo.data
-            print("----------------------- **************************")
-            print(tipo_usuario)
-            conn = conexion_db()
-            sql = "INSERT INTO users (username,first_name,second_name,password,user_type) VALUES (%s,%s,%s,%s,%s)"
-            cursor = conn.cursor()
-            cursor.execute(sql, (usuario,nombre,apellido,password,tipo_usuario,))
-            conn.commit()
-            print("se guardo!!!!")
-            return redirect(url_for('usuarios'))     
+    if form.validate_on_submit():
+        usuario = form.usuario.data
+        nombre = form.nombre.data
+        apellido = form.apellido.data
+        password = hashlib.md5((form.password.data+app.config['SECRET_KEY']).encode()).hexdigest()
+        confirmar = hashlib.md5((form.confirmar.data+app.config['SECRET_KEY']).encode()).hexdigest()
+        tipo_usuario = form.tipo.data
+        conn = conexion_db()
+        sql = "INSERT INTO users (username,first_name,second_name,password,user_type) VALUES (%s,%s,%s,%s,%s)"
+        cursor = conn.cursor()
+        cursor.execute(sql, (usuario,nombre,apellido,password,tipo_usuario,))
+        conn.commit()
+        print("se guardo!!!!")
+        return redirect(url_for('usuarios'))   
     return render_template('agregar_usuario.html', form=form)
 
 @app.route('/getFile', methods=['GET'])
@@ -261,16 +259,8 @@ def catalogos():
     cursor = conn.cursor()
     cursor.execute(select_usuarios)
     result = cursor.fetchall()
-    data = []
-    data0 = []
-    for i in range (len(result)):
-        for j in range(3):
-            data0.append(result[i][j]) 
-            
-        data.append(data0)
-        data0 = []
-        print("HOLA13bbbb23")
-    return render_template('catalogos.html',data=data)
+     
+    return render_template('catalogos2.html',data=result)
 
 
 @app.route('/logout')
@@ -286,7 +276,7 @@ def usuarios():
         sql = "SELECT id_user, username, first_name, second_name FROM users"
         cursor.execute(sql)
         result = cursor.fetchall()
-        return render_template('usuarios.html',data=result)
+        return render_template('usuarios2.html',data=result)
     
     return ('', 204)
 

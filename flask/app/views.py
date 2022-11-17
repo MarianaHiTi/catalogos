@@ -7,8 +7,8 @@ import os
 import base64
 from flask import request, render_template, jsonify, Response, flash, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import (StringField, TextAreaField, FileField, SelectField, PasswordField, SubmitField, validators)
-from wtforms.validators import DataRequired, Email, EqualTo, Length, InputRequired
+from wtforms import (StringField, TextAreaField, FileField, SelectField, PasswordField, SubmitField, validators, HiddenField)
+from wtforms.validators import DataRequired, Email, EqualTo, Length, InputRequired, ValidationError, Optional
 from werkzeug.utils import secure_filename
 from app import app
 import time
@@ -18,8 +18,6 @@ import hashlib
 
 
 app.config['SECRET_KEY']="catalogos"
-UPLOAD_FOLDER = '/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MYSQL_HOST'] = 'db'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
@@ -65,6 +63,11 @@ class ModelUser():
             return None
         except Exception as ex:
             raise Exception(ex)
+        
+        finally:
+            print("SE CIERRA CURSOR")
+            cursor.close()
+            
 
     @classmethod
     def get_by_id(self, db, id):
@@ -79,6 +82,9 @@ class ModelUser():
                 return None
         except Exception as ex:
             raise Exception(ex)
+        
+        finally:
+            cursor.close()
         
 
 
@@ -96,33 +102,67 @@ def conexion_db():
     return conn
 
 ##### AGREGAR CATALOGO EN AUTOMATICO PARA EJEMPLO
-def agregar_catalogo_ejemplo():
-    conn = conexion_db()
-    sql = "INSERT INTO catalogos (nombre_catalogo,descripcion_catalogo,archivo_catalogo,archivo_nombre,usuario_catalogo) VALUES (%s,%s,%s,%s,%s)"
-    cursor = conn.cursor()
-    with open("app/CV_MarianaHinojosa.pdf","rb") as pdf_file:
-        archivo_binario = pdf_file.read()
-
-    cursor.execute(sql, ("Catalogo Ejemplo","Descripcion ejemplo",archivo_binario,"archivo_ejemplo.pdf","admin",))
-    conn.commit()
+#def agregar_catalogo_ejemplo():
+#    conn = conexion_db()
+#    sql = "INSERT INTO catalogos (nombre_catalogo,descripcion_catalogo,archivo_catalogo,archivo_nombre,usuario_catalogo) VALUES (%s,%s,%s,%s,%s)"
+#    cursor = conn.cursor()
+#    with open("app/CV_MarianaHinojosa.pdf","rb") as pdf_file:
+#        archivo_binario = pdf_file.read()
+#
+#    cursor.execute(sql, ("Catalogo Ejemplo","Descripcion ejemplo",archivo_binario,"archivo_ejemplo.pdf","admin",))
+#    conn.commit()
 
 #agregar_catalogo_ejemplo()
 
 class CatalogoForm(FlaskForm):
-    #time.sleep(180)
     nombre = StringField('Nombre catalogo', validators=[InputRequired(),Length(min=10, max=100)])
     descripcion = TextAreaField('Descripcion catalogo',validators=[InputRequired(),Length(max=200)])
     archivo = FileField('Archivo catalogo')
 
 
 class UsuarioForm(FlaskForm):
-    #time.sleep(180)
-    usuario = StringField('Usuario', validators=[Email(message='Ingrese un correo valido'),DataRequired(), ])
+    usuario = StringField('Usuario', validators=[Email(message='Ingrese un correo valido'),DataRequired()])
     nombre = StringField('Nombre', validators=[DataRequired()])
     apellido = StringField('Apellido', validators=[DataRequired()])
     tipo = SelectField(u'Tipo Usuario', choices=[('1', 'Admin'), ('2', 'Normal')])
     password = PasswordField('Contraseña', validators=[DataRequired()])
     confirmar = PasswordField('Confirmar Contraseña', validators=[DataRequired(), EqualTo('password',message='Las contraseñas deben coincidir')])
+    def validate_usuario(self, field):
+        try:
+            sql = """SELECT username FROM users WHERE username = '{}'""".format(field.data)
+            cursor = db.connection.cursor()
+            cursor.execute(sql)
+            row = cursor.fetchone()
+            if row != None:
+                raise ValidationError('Ese usuario ya existe, elige uno diferente')
+        finally:
+            cursor.close()
+            
+            
+def validate_same_username(form,field):
+    if(form.usuario_compare.data != field.data):
+        try:
+            sql = """SELECT username FROM users WHERE username = '{}'""".format(field.data)
+            cursor = db.connection.cursor()
+            cursor.execute(sql)
+            row = cursor.fetchone()
+            if row != None:
+                raise ValidationError('Ese usuario ya existe, elige uno diferente')
+        finally:
+            cursor.close()
+            
+                      
+class UsuarioFormUpdate(FlaskForm):
+    usuario = StringField('Usuario', validators=[Email(message='Ingrese un correo valido'),DataRequired(), validate_same_username])
+    usuario_compare = HiddenField()
+    nombre = StringField('Nombre', validators=[DataRequired()])
+    apellido = StringField('Apellido', validators=[DataRequired()])
+    tipo = SelectField(u'Tipo Usuario', choices=[('1', 'Admin'), ('2', 'Normal')],default=2)
+    password = PasswordField('Contraseña', validators=[Optional(), EqualTo('confirmar',message='Las contraseñas deben coincidir')])
+    confirmar = PasswordField('Confirmar Contraseña', validators=[Optional(), EqualTo('password',message='Las contraseñas deben coincidir')])
+        
+        
+        
  
 @app.route('/')
 def home():
@@ -134,9 +174,9 @@ def home():
 def menu():
     return render_template('menu.html')
 
-@app.route('/adminlte')
+@app.route('/dashboard')
 def admin():
-    return render_template('adminlte.html')
+    return render_template('dashboard.html')
     
 @app.route('/join', methods=['POST'])
 def my_form_post():
@@ -147,7 +187,7 @@ def my_form_post():
     if(user):
         login_user(user)
         return redirect(url_for('catalogos'))    
-    return redirect(url_for('home'))
+    return render_template('home.html',error="Usuario y/o contraseña incorrecta")
 
 
 @app.route('/agregar_catalogo', methods=['POST','GET'])
@@ -156,46 +196,53 @@ def agregar_catalogo():
     form = CatalogoForm()
     if request.method == 'POST':
         if form.validate_on_submit() and form.validate():
-            nombre_catalogo = form.nombre.data
-            descripcion_catalogo = form.descripcion.data
-            file = request.files['file']
-            archivo_binario = file.read()
-            archivo_nombre = secure_filename(file.filename)
-            conn = conexion_db()
-            sql = "INSERT INTO catalogs (catalog_name,catalog_description,file,filename,id_user) VALUES (%s,%s,%s,%s,%s)"
-            cursor = conn.cursor()
-            cursor.execute(sql, (nombre_catalogo,descripcion_catalogo,archivo_binario,archivo_nombre,current_user.id,))
-            conn.commit()
-            print("se guardo!!!!")
-            return redirect(url_for('catalogos'))     
+            try:
+                nombre_catalogo = form.nombre.data
+                descripcion_catalogo = form.descripcion.data
+                file = request.files['file']
+                archivo_binario = file.read()
+                archivo_nombre = secure_filename(file.filename)
+                sql = "INSERT INTO catalogs (catalog_name,catalog_description,file,filename,id_user) VALUES (%s,%s,%s,%s,%s)"
+                cursor = db.connection.cursor()
+                cursor.execute(sql, (nombre_catalogo,descripcion_catalogo,archivo_binario,archivo_nombre,current_user.id,))
+                db.connection.commit()
+                print("se guardo!!!!")
+                return redirect(url_for('catalogos'))
+            except Exception as ex:
+                raise Exception(ex)
+            finally:
+                cursor.close()     
     return render_template('agregar_catalogo.html', form=form)
 
 @app.route('/agregar_usuario', methods=['POST','GET'])
 @login_required
 def agregar_usuario():
     form = UsuarioForm()
-    if form.validate_on_submit():
-        usuario = form.usuario.data
-        nombre = form.nombre.data
-        apellido = form.apellido.data
-        password = hashlib.md5((form.password.data+app.config['SECRET_KEY']).encode()).hexdigest()
-        confirmar = hashlib.md5((form.confirmar.data+app.config['SECRET_KEY']).encode()).hexdigest()
-        tipo_usuario = form.tipo.data
-        conn = conexion_db()
-        sql = "INSERT INTO users (username,first_name,second_name,password,user_type) VALUES (%s,%s,%s,%s,%s)"
-        cursor = conn.cursor()
-        cursor.execute(sql, (usuario,nombre,apellido,password,tipo_usuario,))
-        conn.commit()
-        print("se guardo!!!!")
-        return redirect(url_for('usuarios'))   
+    if form.validate_on_submit() and form.validate():
+        try:
+            usuario = form.usuario.data
+            nombre = form.nombre.data
+            apellido = form.apellido.data
+            password = hashlib.md5((form.password.data+app.config['SECRET_KEY']).encode()).hexdigest()
+            confirmar = hashlib.md5((form.confirmar.data+app.config['SECRET_KEY']).encode()).hexdigest()
+            tipo_usuario = form.tipo.data
+            sql = "INSERT INTO users (username,first_name,second_name,password,user_type) VALUES (%s,%s,%s,%s,%s)"
+            cursor = db.connection.cursor()
+            cursor.execute(sql, (usuario,nombre,apellido,password,tipo_usuario,))
+            db.connection.commit()
+            print("se guardo!!!!")
+            return redirect(url_for('usuarios'))
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()   
     return render_template('agregar_usuario.html', form=form)
 
 @app.route('/getFile', methods=['GET'])
 def getFile():
     try:
         select_catalogo = "SELECT file, filename FROM catalogs WHERE id_catalog = {}".format(request.args.get('id'))
-        conn = conexion_db()
-        cursor = conn.cursor()
+        cursor = db.connection.cursor()
         cursor.execute(select_catalogo)
         myresult = cursor.fetchone()
         print(myresult[1])
@@ -204,13 +251,10 @@ def getFile():
         print(filename)
         print("SIUs")
         return Response(myresult[0], mimetype="text/"+extension, headers={"Content-disposition": "attachment; filename="+filename+"."+extension})
-    except mysql.connector.Error as error:
-        print("Failed to read BLOB data from MySQL table {}".format(error)) 
+    except Exception as ex:
+        raise Exception(ex)
     finally:
-        if (conn.is_connected()):
-            cursor.close()
-            conn.close()
-            print("MySQL connection is closed")
+        cursor.close()
     return None
 
 @app.route('/dynamic_panel', methods=['GET'])
@@ -254,16 +298,21 @@ def get_panels():
 @app.route('/catalogos')
 @login_required
 def catalogos():
-    conn = conexion_db()
-    select_usuarios = "SELECT id_catalog,catalog_name,catalog_description FROM catalogs where id_user = {}".format(current_user.id)
-    cursor = conn.cursor()
-    cursor.execute(select_usuarios)
-    result = cursor.fetchall()
-     
-    return render_template('catalogos2.html',data=result)
+    try:
+        select_usuarios = "SELECT id_catalog,catalog_name,catalog_description FROM catalogs where id_user = {}".format(current_user.id)
+        cursor = db.connection.cursor()
+        cursor.execute(select_usuarios)
+        result = cursor.fetchall()
+        return render_template('catalogos.html',data=result)
+    except Exception as ex:
+        raise Exception(ex)
+    finally:
+        cursor.close()
+        
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
@@ -272,76 +321,151 @@ def logout():
 @login_required
 def usuarios():
     if(current_user.user_type == 1):
-        cursor = db.connection.cursor()
-        sql = "SELECT id_user, username, first_name, second_name FROM users"
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        return render_template('usuarios2.html',data=result)
+        try:
+            cursor = db.connection.cursor()
+            sql = "SELECT id_user, username, first_name, second_name FROM users"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return render_template('usuarios2.html',data=result)
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()
     
-    return ('', 204)
+    return redirect(url_for('catalogos'))
 
-#@app.route('/agregar_usuario', methods=['POST','GET'])
-#@login_required
-#def agregar_usuario():
-#    form = UsuarioForm(request.form)
-#    if request.method == 'POST' and form.validate():
-#        user = User(form.usuario.data, form.nombre.data, form.apellido.data,
-#                    form.password.data)
-        #db_session.add(user)
-#        flash('Thanks for registering')
-#        return redirect(url_for('usuarios'))
-#    return render_template('agregar_usuario.html', form=form)
-
-@app.route('/actualizar_usuario', methods=['GET'])
+@app.route('/actualizar_usuario', methods=['GET', 'POST'])
 @login_required
 def actualizar_usuario():
-    print(request.args.get('id'))
-    result = None
-    return render_template('actualizar_usuario.html',data=result)
+    if(current_user.user_type == 1):
+        id_user = request.args.get('id')
+        form = UsuarioFormUpdate()
+        if(request.method =='GET'):
+            try:
+                select_catalogo = "SELECT id_user, username, first_name, second_name, user_type FROM users WHERE id_user = {}".format(id_user)
+                cursor = db.connection.cursor()
+                cursor.execute(select_catalogo)
+                result = cursor.fetchone()
+                print(result)
+                form.usuario.data = result[1]
+                form.usuario_compare.data = result[1]
+                form.nombre.data = result[2]
+                form.apellido.data = result[3]
+                form.tipo.process_data(result[4]) 
+            except Exception as ex:
+                raise Exception(ex)
+            finally:
+                cursor.close()
+                
+        if form.validate_on_submit():
+            try:
+                usuario = form.usuario.data
+                nombre = form.nombre.data
+                apellido = form.apellido.data
+                tipo = form.tipo.data
+                password = form.password.data
+                confirmar = form.confirmar.data
+                cursor = db.connection.cursor()
+                sql = ""        
+                if password !='' and confirmar != '':
+                    password = hashlib.md5((form.password.data+app.config['SECRET_KEY']).encode()).hexdigest()
+                    sql = "UPDATE users SET username = %s, first_name = %s, second_name = %s, user_type = %s, password = %s where id_user = %s"
+                    cursor.execute(sql, (usuario,nombre,apellido,tipo,password, id_user,))    
+                else:
+                    sql = "UPDATE users SET username = %s, first_name = %s, second_name = %s, user_type = %s where id_user = %s"
+                    cursor.execute(sql, (usuario,nombre,apellido,tipo, id_user,))
+                db.connection.commit()
+                return redirect(url_for('usuarios'))
+            except Exception as ex:
+                raise Exception(ex)
+            finally:
+                cursor.close()
+                
+        return render_template('actualizar_usuario.html',form=form)
+    return redirect(url_for('catalogos'))
+
+
+@app.route('/borrar_usuario', methods=['GET'])
+@login_required
+def borrar_usuario():
+    
+    if(current_user.user_type == 1):
+        print(request.args.get('id'))
+        try:
+            cursor = db.connection.cursor()
+            sql = "DELETE FROM users WHERE id_user = {}".format(request.args.get('id'))
+            cursor.execute(sql)
+            db.connection.commit()
+            return redirect(url_for('usuarios'))
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()
+    return ('', 204)
 
 @app.route('/actualizar_catalogo', methods=['GET','POST'])
 @login_required
 def get_catalogo():
-    print("SIUU")
-    print("SIUU")
-    print("SIUU")
-    
     form = CatalogoForm()
     id_catalog = request.args.get('id')
     print(id_catalog)
     if(request.method =='GET'):
-        select_catalogo = "SELECT id_catalog, catalog_name, catalog_description FROM catalogs WHERE id_catalog = {}".format(id_catalog)
-        conn = conexion_db()
-        cursor = conn.cursor()
-        cursor.execute(select_catalogo)
-        result = cursor.fetchone()
-        print(result)
-        form.nombre.data = result[1]
-        form.descripcion.data = result[2]
+        try:
+            select_catalogo = "SELECT id_catalog, catalog_name, catalog_description FROM catalogs WHERE id_catalog = {}".format(id_catalog)
+            cursor = db.connection.cursor()
+            cursor.execute(select_catalogo)
+            result = cursor.fetchone()
+            print(result)
+            form.nombre.data = result[1]
+            form.descripcion.data = result[2]
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()
+            
     if form.validate_on_submit():
-        nombre_catalogo = form.nombre.data
-        print("JAJAJA")
-        print(nombre_catalogo)
-        descripcion_catalogo = form.descripcion.data
-        file = request.files['file']
-        conn = conexion_db()
-        cursor = conn.cursor()        
-        if file.filename !='':
+        try:
+            nombre_catalogo = form.nombre.data
+            descripcion_catalogo = form.descripcion.data
             file = request.files['file']
-            archivo_binario = file.read()
-            archivo_nombre = secure_filename(file.filename)
-            sql = "UPDATE catalogs SET catalog_name = %s, catalog_description = %s, file = %s, filename = %s where id_catalog = %s"
-            cursor.execute(sql, (nombre_catalogo,descripcion_catalogo, archivo_binario, archivo_nombre, id_catalog,))
-            conn.commit()
-        else:
-            try:
+            cursor = db.connection.cursor()        
+            if file.filename !='':
+                file = request.files['file']
+                archivo_binario = file.read()
+                archivo_nombre = secure_filename(file.filename)
+                sql = "UPDATE catalogs SET catalog_name = %s, catalog_description = %s, file = %s, filename = %s where id_catalog = %s"
+                cursor.execute(sql, (nombre_catalogo,descripcion_catalogo, archivo_binario, archivo_nombre, id_catalog,))
+                db.connection.commit()
+            else:
                 sql = "UPDATE catalogs SET catalog_name = %s, catalog_description = %s where id_catalog = %s"
                 cursor.execute(sql, (nombre_catalogo,descripcion_catalogo,id_catalog,))
-                conn.commit()
-            except mysql.connector.Error as error:
-                print("Failed to read BLOB data from MySQL table {}".format(error))
-        return redirect(url_for('catalogos'))
+                db.connection.commit()
+            return redirect(url_for('catalogos'))
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()
+            
     return render_template('actualizar_catalogo.html',form=form)
+
+
+
+@app.route('/borrar_catalogo', methods=['GET'])
+@login_required
+def borrar_catalogo():
+    
+    print(request.args.get('id'))
+    try:
+        cursor = db.connection.cursor()
+        sql = "DELETE FROM catalogs WHERE id_catalog = {}".format(request.args.get('id'))
+        cursor.execute(sql)
+        db.connection.commit()
+        return redirect(url_for('catalogos'))
+    except Exception as ex:
+        raise Exception(ex)
+    finally:
+            cursor.close()
+    return ('', 204)
     
 
         
